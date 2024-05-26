@@ -35,12 +35,12 @@ Router.post('/create-post',authenticateUser, upload.single('myImage') ,async (re
             return res.status(400).json({ message: 'No image file provided' });
         }
         const {category,title,content}=req.body;
-        console.log({category});
-        console.log({title});
-        console.log({content});
+        // console.log({category});
+        // console.log({title});
+        // console.log({content});
         
         const authorId = req.userId;
-        console.log({authorId});
+        // console.log({authorId});
 
         const createBlog = await blogPost.create({
             category:category,
@@ -53,7 +53,6 @@ Router.post('/create-post',authenticateUser, upload.single('myImage') ,async (re
         res.status(201).json(createBlog);
     }
     catch(error){
-        console.log('yes');
         res.status(400).json({error:error.message});
     }
 });
@@ -91,7 +90,7 @@ Router.patch('/update-post/:postId', authenticateUser, upload.single('myImage'),
 
         res.status(200).json(updatedPost);
     } catch (error) {
-        console.error('Error updating post:', error);
+        // console.error('Error updating post:', error);
         res.status(400).json({ error: error.message });
     }
 });
@@ -124,7 +123,6 @@ Router.get('/all-post',async (req,res) =>{
 
 Router.get('/my-post',authenticateUser,async(req,res)=>{
     try{
-        console.log('mypost has called the authenticated User');
         const authorId=req.userId;
         const mypost = await blogPost.find({author:authorId});
         res.status(201).json(mypost);
@@ -150,7 +148,7 @@ Router.get('/fullPost/:id', async(req,res) =>{
 Router.get('/authorBlog/:id', async (req, res) => {
     try {
       const AuthorId = req.params.id;
-      console.log({AuthorId});
+    //   console.log({AuthorId});
       const AuthorDetail = await User.findById(AuthorId);
       if (!AuthorDetail) {
         return res.status(404).json({ message: 'Author not found' });

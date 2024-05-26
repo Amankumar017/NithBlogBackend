@@ -29,17 +29,6 @@ const storage = multer.diskStorage({
 // Create multer instance
 const upload = multer({ storage:storage });
 
-// Router.get('/',async (req,res) => {
-//     try{
-//         res.send('how are you ');
-
-//     }catch(error){
-//         console.log(error);
-//     }
-//     // res.send("api is running");
-// });
-
-
 Router.post('/login', async (req,res)=>{
     const {email,password} = req.body;
     console.log({email});
@@ -51,7 +40,7 @@ Router.post('/login', async (req,res)=>{
             return res.status(401).json({ message: 'Invalid Email' });
         }
         const isCorrectPassword = await bcrypt.compare(password,isUser.password);
-        console.log(isCorrectPassword);
+        // console.log(isCorrectPassword);
         if(!isCorrectPassword){
             return res.status(401).json({message: 'Invalid password'});
         }
@@ -60,7 +49,7 @@ Router.post('/login', async (req,res)=>{
         const token = jwt.sign({ userId: isUser._id }, process.env.JWT_SECRET_KEY, { expiresIn: process.env.JWT_EXPIRES_IN });
         res.status(201).json({token});
 
-        console.log('Login Authentication successful');
+        // console.log('Login Authentication successful');
     }
     catch(error){
         res.status(500).json({ message: 'Internal server error' });
@@ -69,19 +58,18 @@ Router.post('/login', async (req,res)=>{
 
 Router.patch('/update-password', async(req,res)=>{
     try{
-        console.log('updatedPassword is called')
         const resetToken = req.query.token;
         let userId;
-        console.log('updatepasswordresetToken',resetToken);
+        // console.log('updatepasswordresetToken',resetToken);
         jwt.verify(resetToken, process.env.JWT_SECRET_KEY,(error,decoded)=>{
             if(error){
                 console.log('here is error',error.message);
             }
-            console.log('here is decode value',decoded);
+            // console.log('here is decode value',decoded);
             userId = decoded.userId;
         });
         
-        console.log('userId',userId);
+        // console.log('userId',userId);
         const {newPassword} = req.body;
         // Number of salt rounds for bcrypt hashing (10 is a good balance between security and performance) that's why i set this to 10
         const saltRounds=10;
@@ -92,7 +80,7 @@ Router.patch('/update-password', async(req,res)=>{
             { password: hashedPassword },
             { new: true },
         );
-        console.log('updatedPasswordData',updatedPasswordData);
+        // console.log('updatedPasswordData',updatedPasswordData);
         res.status(201).json(updatedPasswordData);
     }catch(error){
         console.log({error:error.message});
@@ -100,7 +88,7 @@ Router.patch('/update-password', async(req,res)=>{
 });
 
 Router.get('/writer-details/:authorId',async(req,res)=>{
-    console.log('writer-details is called');
+    // console.log('writer-details is called');
     try{
         const authorId = req.params.authorId;
         const data = await User.findById(authorId);
@@ -112,9 +100,9 @@ Router.get('/writer-details/:authorId',async(req,res)=>{
 
 Router.get('/user-profile',authenticateUser,async(req,res)=>{
     try{
-        console.log('userprofile authenticateUser is called')
+        // console.log('userprofile authenticateUser is called')
         const authorId = req.userId;
-        console.log('authorId',authorId);
+        // console.log('authorId',authorId);
         const data = await User.findById(authorId);
         res.status(201).json(data);
     }
@@ -128,15 +116,15 @@ Router.patch('/update-profile',authenticateUser, async (req, res) => {
         // Destructure field and value directly from req.body
         const { field, value } = req.body;
 
-        console.log('Request Body:', req.body);  // Log the request body
-        console.log({field});
-        console.log({value});
+        // console.log('Request Body:', req.body);  // Log the request body
+        // console.log({field});
+        // console.log({value});
         // Check if both field and value are provided
         if (!field || !value) {
             return res.status(400).json({ error: 'Field and value are required.' });
         }
         const userId = req.userId; 
-        console.log({ userId });
+        // console.log({ userId });
         
         // Update the user document with the specified field and value
         const updatedUser = await User.findByIdAndUpdate(userId, { [field]: value }, { new: true });
@@ -150,7 +138,7 @@ Router.patch('/update-profile',authenticateUser, async (req, res) => {
         return res.status(200).json(updatedUser);
     } catch (error) {
         // Log and send internal server error in case of any unexpected errors
-        console.error('Error updating profile:', error);
+        // console.error('Error updating profile:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
@@ -162,18 +150,17 @@ Router.patch('/update-profile-pic',authenticateUser, upload.single('profilePic')
             return res.status(400).json({ message: 'No image file provided' });
         }
         const authorId = req.userId;
-        console.log('authorId',authorId);
+        // console.log('authorId',authorId);
         const data = await User.findById(authorId);
-        console.log('data',data);
+        // console.log('data',data);
         // console.log('req.file',req.file);
-        console.log('image', req.file.path);
+        // console.log('image', req.file.path);
         const imageUrl=req.file.path;
         const imageUrlFormatted = imageUrl.replace(/\\/g, '/');
         const updateUser = await User.findByIdAndUpdate(authorId, { image: imageUrlFormatted},  { new: true });
         res.status(200).json(updateUser);
     }
     catch(error){
-        console.log('yes i am here');
         res.status(400).json({error:error.message});
     }
 });
@@ -182,7 +169,7 @@ Router.post('/verify-email', async(req,res)=>{
     try{
         const {name,email,password}= req.body;
         const addUser = {name,email,password};
-        console.log('Received Data of New User in Backend',addUser);
+        // console.log('Received Data of New User in Backend',addUser);
 
         //Encrypt the data
         const iv = crypto.randomBytes(16); // Initialization Vector
@@ -325,11 +312,11 @@ Router.get('/register',async (req,res)=>{
 
 
         const {name,email,password} = JSON.parse(decrypted);
-        console.log({name,email,password});
+        // console.log({name,email,password});
 
         const existingUser = await User.findOne({email});
         if (existingUser) {
-            console.log(existingUser);
+            // console.log(existingUser);
             return res.status(400).json({ message: 'User already exists' });
         }
 
@@ -339,7 +326,7 @@ Router.get('/register',async (req,res)=>{
             email:email,
             password:hashedPassword,
         });
-        console.log(UserAdded);
+        // console.log(UserAdded);
         res.status(201).json(UserAdded);
     }
     catch(error){
@@ -349,11 +336,11 @@ Router.get('/register',async (req,res)=>{
 
 Router.post('/forgot-password',async(req,res)=>{
     try{
-        console.log('req.body',req.body);
+        // console.log('req.body',req.body);
         const {email}=req.body;
-        console.log('email',{email});
+        // console.log('email',{email});
         const user = await User.findOne({email});
-        console.log('useridprovided',user._id);
+        // console.log('useridprovided',user._id);
         const resetToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: Date.now() + 3600000 });
 
         // Created a Nodemailer transport with Gmail SMTP settings

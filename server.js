@@ -8,7 +8,11 @@ const blogRouter = require('./Routers/blogRouter');
 // const Blog = require('./models/blogmodel');
 
 
-app.use(cors());
+app.use(cors({
+    origin: 'https://nithblog.netlify.app', 
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, 
+}));
 app.use(express.json());
 dotenv.config();
 
