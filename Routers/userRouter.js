@@ -205,7 +205,7 @@ Router.post('/verify-email', async(req,res)=>{
         });  
 
         // Defined the reset URL 
-        const resetUrl =  process.env.BASE_URL + `/email-verified?encryptedData=${encrypted}&token=${emailVerifyToken}&ivHex=${iv.toString('hex')}`;
+        const resetUrl =  process.env.BASE_URL + `email-verified?encryptedData=${encrypted}&token=${emailVerifyToken}&ivHex=${iv.toString('hex')}`;
         const emailContent = ( 
             `<!DOCTYPE html>
             <html lang="en">
@@ -366,7 +366,7 @@ Router.post('/forgot-password',async(req,res)=>{
         });  
 
         // Defined the reset URL 
-        const resetUrl =  process.env.BASE_URL + `/reset-password?token=${resetToken}`;
+        const resetUrl =  process.env.BASE_URL + `reset-password?token=${resetToken}`;
         const emailContent = ( 
             `<!DOCTYPE html>
             <html lang="en">
