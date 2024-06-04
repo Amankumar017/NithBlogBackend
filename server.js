@@ -9,7 +9,7 @@ const blogRouter = require('./Routers/blogRouter');
 
 
 app.use(cors({
-    origin: 'http://localhost:3000', 
+    origin: 'https://nithblog.netlify.app', 
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, 
 }));
