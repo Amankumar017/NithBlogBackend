@@ -435,7 +435,7 @@ Router.post('/forgot-password',async(req,res)=>{
         
         // Send the reset email to the user's email address
         transporter.sendMail({
-            from: 'amankumar16102@gmail.com',
+            from: '20dcs017@nith.ac.in',
             to: email,
             subject: 'Password Reset Request', 
             html: emailContent,
