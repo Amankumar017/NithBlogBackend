@@ -9,6 +9,7 @@ const sharp = require('sharp');
 const fs = require('fs');
 
 Router.use(express.urlencoded({extended:false}));
+const { uploadOnCloudinary } = require('../cloudinary');
 
 // Set up multer storage
 const storage = multer.diskStorage({
@@ -41,12 +42,18 @@ Router.post('/create-post',authenticateUser, upload.single('myImage') ,async (re
         
         const authorId = req.userId;
         // console.log({authorId});
-
+        const imageUrl=req.file.path;
+        console.log({imageUrl});
+        const updatedImage = await uploadOnCloudinary(imageUrl);
+        
+        if (!updatedImage) {
+            throw new ApiError(400, "updatedImage file is required")
+        } 
         const createBlog = await blogPost.create({
             category:category,
             title:title,
             content:content,
-            image:req.file.path,
+            image:updatedImage.url,
             author:authorId
         });
         
@@ -81,8 +88,14 @@ Router.patch('/update-post/:postId', authenticateUser, upload.single('myImage'),
 
         // Check if the request contains an image file
         if (req.file) {
+            const imageUrl=req.file.path;
+            const updatedImage = await uploadOnCloudinary(imageUrl);
+            
+            if (!updatedImage) {
+                throw new ApiError(400, "updatedImage file is required")
+            } 
             // Update the image path in the database
-            existingPost.image = req.file.path;
+            existingPost.image =updatedImage.url;
         }
 
         // Save the updated post

@@ -10,9 +10,11 @@ const blogRouter = require('./Routers/blogRouter');
 
 app.use(cors({
     origin: 'https://nithblog.netlify.app', 
+    // origin: 'http://localhost:3000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, 
 }));
+
 app.use(express.json());
 dotenv.config();
 
