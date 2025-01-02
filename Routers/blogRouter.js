@@ -16,11 +16,17 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, 'uploads/'); // Specify the directory where the uploaded files will be stored
     },
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      const extname = path.extname(file.originalname);
-      const newFileName =file.fieldname + '-' + uniqueSuffix + extname;
-      cb(null, newFileName); // Use a unique filename for each uploaded file
+    // filename: (req, file, cb) => {
+    //   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    //   const extname = path.extname(file.originalname);
+    //   const newFileName =file.fieldname + '-' + uniqueSuffix + extname;
+    //   cb(null, newFileName); // Use a unique filename for each uploaded file
+    // },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const extname = '.' + file.originalname.split('.').pop(); // Get file extension
+        const newFileName = file.fieldname + '-' + uniqueSuffix + extname; // Construct filename
+        cb(null, newFileName); // Use a unique filename for each uploaded file
     },
 });
 
