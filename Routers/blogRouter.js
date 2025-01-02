@@ -48,6 +48,10 @@ Router.post('/create-post',authenticateUser, upload.single('myImage') ,async (re
         
         const authorId = req.userId;
         // console.log({authorId});
+        // Verify file exists before processing
+        if (!fs.existsSync(req.file.path)) {
+            return res.status(400).json({ message: 'File upload failed' });
+        }
         const imageUrl=req.file.path;
         console.log({imageUrl});
         const updatedImage = await uploadOnCloudinary(imageUrl);
