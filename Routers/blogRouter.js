@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      const extname = '.' + file.originalname.split('.').pop();
+      const extname = path.extname(file.originalname);
       const newFileName =file.fieldname + '-' + uniqueSuffix + extname;
       cb(null, newFileName); // Use a unique filename for each uploaded file
     },
@@ -44,8 +44,8 @@ Router.post('/create-post',authenticateUser, upload.single('myImage') ,async (re
         // console.log({authorId});
         const imageUrl=req.file.path;
         console.log({imageUrl});
-        const {url:updatedImage }= await uploadOnCloudinary(imageUrl);
-        
+        const updatedImage = await uploadOnCloudinary(imageUrl);
+        console.log({updatedImage});
         if (!updatedImage) {
             throw new ApiError(400, "updatedImage file is required")
         } 
@@ -53,7 +53,7 @@ Router.post('/create-post',authenticateUser, upload.single('myImage') ,async (re
             category:category,
             title:title,
             content:content,
-            image:updatedImage,
+            image:updatedImage.url,
             author:authorId
         });
         
